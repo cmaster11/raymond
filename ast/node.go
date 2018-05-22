@@ -523,7 +523,7 @@ func (node *ContentStatement) Accept(visitor Visitor) interface{} {
 
 // Writes node back to textual form
 func (node *ContentStatement) Serialize() string {
-	return node.Original
+	return node.Value
 }
 
 //
