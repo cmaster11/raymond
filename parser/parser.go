@@ -47,7 +47,7 @@ func newParser(input string) *parser {
 
 type ParserOptions struct {
 	// On content hook
-	OnContent func(text string) string
+	OnContent OnContentFunction
 }
 
 // Parse analyzes given input and returns the AST root node.
@@ -74,6 +74,10 @@ func Parse(input string, options *ParserOptions) (result *ast.Program, err error
 
 	// fix whitespaces
 	processWhitespaces(result)
+
+	if options.OnContent != nil {
+		processOnContents(result, options.OnContent)
+	}
 
 	// named returned values
 	return
@@ -181,10 +185,6 @@ func (p *parser) parseContent() *ast.ContentStatement {
 	}
 
 	stmt := ast.NewContentStatement(tok.Pos, tok.Line, tok.Val)
-
-	if p.options.OnContent != nil {
-		stmt.Value = p.options.OnContent(stmt.Value)
-	}
 
 	return stmt
 }
