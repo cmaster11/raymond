@@ -2,7 +2,6 @@ package raymond
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"sync"
 )
@@ -29,7 +28,6 @@ func init() {
 	RegisterHelper("unless", unlessHelper)
 	RegisterHelper("with", withHelper)
 	RegisterHelper("each", eachHelper)
-	RegisterHelper("log", logHelper)
 	RegisterHelper("lookup", lookupHelper)
 	RegisterHelper("equal", equalHelper)
 }
@@ -374,12 +372,6 @@ func eachHelper(context interface{}, options *Options) interface{} {
 	}
 
 	return result
-}
-
-// #log helper
-func logHelper(message string) interface{} {
-	log.Print(message)
-	return ""
 }
 
 // #lookup helper
