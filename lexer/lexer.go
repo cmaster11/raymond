@@ -68,6 +68,9 @@ var (
 	rOpen            = regexp.MustCompile(`^\{\{~?&?`)
 	rClose           = regexp.MustCompile(`^~?\}\}`)
 	rOpenBlockParams = regexp.MustCompile(`^as\s+\|`)
+	// {{!--  ... --}}
+	rOpenCommentDash  = regexp.MustCompile(`^\{\{~?!--\s*`)
+	rCloseCommentDash = regexp.MustCompile(`^\s*--~?\}\}`)
 	// {{! ... }}
 	rOpenComment  = regexp.MustCompile(`^\{\{~?!\s*`)
 	rCloseComment = regexp.MustCompile(`^\s*~?\}\}`)
@@ -259,6 +262,11 @@ func lexContent(l *Lexer) lexFunc {
 	} else if l.isString(escapedOpenMustache) {
 		// \{{
 		next = lexEscapedOpenMustache
+	} else if str := l.findRegexp(rOpenCommentDash); str != "" {
+		// {{!--
+		l.closeComment = rCloseCommentDash
+
+		next = lexComment
 	} else if str := l.findRegexp(rOpenComment); str != "" {
 		// {{!
 		l.closeComment = rCloseComment

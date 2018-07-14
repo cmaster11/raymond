@@ -176,6 +176,16 @@ var lexTests = []lexTest{
 		[]Token{tokContent("foo "), tokComment("{{! this is a comment }}"), tokContent(" bar "), tokOpen, tokID("baz"), tokClose, tokEOF},
 	},
 	{
+		`tokenizes a block comment as "COMMENT"`,
+		`foo {{!-- this is a {{comment}} --}} bar {{ baz }}`,
+		[]Token{tokContent("foo "), tokComment("{{!-- this is a {{comment}} --}}"), tokContent(" bar "), tokOpen, tokID("baz"), tokClose, tokEOF},
+	},
+	{
+		`tokenizes a block comment with whitespace as "COMMENT"`,
+		"foo {{!-- this is a\n{{comment}}\n--}} bar {{ baz }}",
+		[]Token{tokContent("foo "), tokComment("{{!-- this is a\n{{comment}}\n--}}"), tokContent(" bar "), tokOpen, tokID("baz"), tokClose, tokEOF},
+	},
+	{
 		`tokenizes open and closing blocks as OPEN_BLOCK, ID, CLOSE ..., OPEN_ENDBLOCK ID CLOSE`,
 		`{{#foo}}content{{/foo}}`,
 		[]Token{tokOpenBlock, tokID("foo"), tokClose, tokContent("content"), tokOpenEndBlock, tokID("foo"), tokClose, tokEOF},
