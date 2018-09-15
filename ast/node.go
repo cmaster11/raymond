@@ -407,7 +407,7 @@ func (node *BlockStatement) Serialize() string {
 
 	content += "/"
 
-	content += node.Expression.Serialize()
+	content += node.Expression.Path.Serialize()
 
 	if node.CloseStrip != nil && node.CloseStrip.Close {
 		content += "~"

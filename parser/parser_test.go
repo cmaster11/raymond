@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"testing"
 
+	"encoding/json"
 	"github.com/cmaster11/raymond/ast"
 	"github.com/cmaster11/raymond/lexer"
-	"encoding/json"
 )
 
 type parserTest struct {
@@ -85,6 +85,8 @@ var parserTests = []parserTest{
 	{"parses block with block params", `{{#foo as |bar baz|}}content{{/foo}}`, "BLOCK:\n  PATH:foo []\n  PROGRAM:\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]\n", ``},
 	{"parses inverse block with block params", `{{^foo as |bar baz|}}content{{/foo}}`, "BLOCK:\n  PATH:foo []\n  {{^}}\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]\n", ``},
 	{"parses chained inverse block with block params", `{{#foo}}{{else foo as |bar baz|}}content{{/foo}}`, "BLOCK:\n  PATH:foo []\n  PROGRAM:\n  {{^}}\n    BLOCK:\n      PATH:foo []\n      PROGRAM:\n        BLOCK PARAMS: [ bar baz ]\n        CONTENT[ 'content' ]\n", `{{#foo}}{{else foo as |bar baz|}}content{{/foo}}`},
+
+	{"parses a helper with parameters", `{{#equal a "b"}}omg{{^}}helo{{/equal}}`, "BLOCK:\n  PATH:equal [PATH:a, \"b\"]\n  PROGRAM:\n    CONTENT[ 'omg' ]\n  {{^}}\n    CONTENT[ 'helo' ]\n", ``},
 }
 
 func TestParser(t *testing.T) {
